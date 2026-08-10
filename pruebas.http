@@ -1,0 +1,82 @@
+### Servidor de producción (Express + Supabase) — npm run dev primero
+
+@baseUrl = http://localhost:3000
+
+### 1) Registro — CREAR una empresa nueva (quedás como admin)
+# @name registroAdmin
+POST {{baseUrl}}/registro
+Content-Type: application/json
+
+{
+  "email": "admin@miempresa.com",
+  "contrasena": "12345678",
+  "nombre_empresa": "Mi Empresa SAS"
+}
+
+### Anotá el "codigo_invitacion" que te devuelve el paso anterior,
+### lo vas a necesitar en el paso 2 para simular un empleado.
+
+### 2) Registro — UNIRSE con código (queda como empleado)
+POST {{baseUrl}}/registro
+Content-Type: application/json
+
+{
+  "email": "empleado@miempresa.com",
+  "contrasena": "12345678",
+  "codigo_invitacion": "PEGÁ-ACÁ-EL-CÓDIGO-DEL-PASO-1"
+}
+
+### 3) Login como admin
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@miempresa.com",
+  "contrasena": "12345678"
+}
+
+### 4) Ver mis archivos (vacío al principio)
+GET {{baseUrl}}/archivos
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 5) Subir un archivo
+POST {{baseUrl}}/subir?nombre=nota.txt
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: text/plain
+
+Nota subida como admin de Mi Empresa SAS
+
+### 6) Volver a listar
+GET {{baseUrl}}/archivos
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 7) Descargar
+GET {{baseUrl}}/descargar/nota.txt
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 8) Borrar
+DELETE {{baseUrl}}/archivos/nota.txt
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 9) Sin token (debe dar 401)
+GET {{baseUrl}}/archivos
+
+### 10) Registro con email repetido (debe dar 409)
+POST {{baseUrl}}/registro
+Content-Type: application/json
+
+{
+  "email": "admin@miempresa.com",
+  "contrasena": "12345678",
+  "nombre_empresa": "Otra Empresa"
+}
+
+### 11) Registro sin empresa ni código (debe dar 400)
+POST {{baseUrl}}/registro
+Content-Type: application/json
+
+{
+  "email": "nuevo@test.com",
+  "contrasena": "12345678"
+}

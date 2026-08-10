@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno con secretos — nunca se sube a git
+.env
+
+# Archivos subidos durante las pruebas (no son parte del código)
+*/almacenamiento/*
+!*/almacenamiento/.gitkeep
+
+# "Base de datos" de usuarios de prueba
+04-autenticacion/usuarios.json
+
+# Sistema operativo / editor
+.DS_Store
+*.log
